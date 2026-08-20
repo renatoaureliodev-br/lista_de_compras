@@ -135,11 +135,41 @@ h1 {
 }
 
 /* ================================
-   BOTÃO ADICIONAR
+   ÁREA DE ADIÇÃO
 ================================ */
 
-#app > button {
-  width: 100px;
+.area-adicionar {
+  display: flex;
+  gap: 10px;
+}
+
+/* INPUT */
+
+.area-adicionar input {
+  flex: 2;
+
+  min-width: 0;
+
+  padding: 11px;
+
+  border: 1px solid #d8c8b8;
+  border-radius: 6px;
+
+  background-color: #fffdf9;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+.area-adicionar input:focus {
+  border-color: #8b5e3c;
+}
+
+/* BOTÕES */
+
+#adicionar-item {
+  flex: 1;
 
   padding: 11px 8px;
 
@@ -155,10 +185,26 @@ h1 {
   cursor: pointer;
 }
 
-#app > button:hover {
-  background-color: #5b3e2a;
+#limpar-lista {
+  flex: 1;
+
+  padding: 11px 8px;
+
+  border: none;
+  border-radius: 6px;
+
+  background-color: #a56b4f;
+
+  color: white;
+
+  font-size: 14px;
+
+  cursor: pointer;
 }
 
+.area-adicionar button:hover {
+  background-color: #5b3e2a;
+}
 /* ================================
    LISTA
 ================================ */

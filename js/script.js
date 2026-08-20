@@ -1,25 +1,31 @@
-let listElement = document.querySelector("#app ul");
-let inputElement = document.querySelector("#app input");
-let buttonElement = document.querySelector("#app button");
-let progressoBarra = document.querySelector("#progresso-barra");
-let progressoTexto = document.querySelector("#progresso-texto");
-let mensagensElement = document.querySelector("#mensagens");
+const listElement = document.querySelector("#app ul");
+const inputElement = document.querySelector("#app input");
+const adicionarElement = document.querySelector("#adicionar-item");
+const limparElement = document.querySelector("#limpar-lista");
+const progressoBarra = document.querySelector("#progresso-barra");
+const progressoTexto = document.querySelector("#progresso-texto");
+const mensagensElement = document.querySelector("#mensagens");
 
 let listaItens = JSON.parse(localStorage.getItem("@listaDeCompras")) || [];
 
 listar();
 
+// ==============================
+// ADICIONAR ITEM
+// ==============================
+
 function adicionar() {
   let item = inputElement.value.trim();
-  let itemExiste = listaItens.some(
-    (i) => i.nome.toLowerCase() === item.toLowerCase(),
-  );
 
   if (item === "") {
     mostrarMensagem("Digite algum item", "erro");
     inputElement.focus();
     return;
   }
+
+  let itemExiste = listaItens.some(
+    (i) => i.nome.toLowerCase() === item.toLowerCase(),
+  );
 
   if (itemExiste) {
     mostrarMensagem("Item já existe", "aviso");
@@ -40,11 +46,36 @@ function adicionar() {
   salvarDados();
 }
 
+// ==============================
+// LIMPAR LISTA
+// ==============================
+
+function limparLista() {
+  let confirmar = confirm("Tem certeza que deseja limpar toda a lista?");
+
+  if (!confirmar) {
+    return;
+  }
+
+  listaItens = [];
+
+  listar();
+  salvarDados();
+
+  inputElement.focus();
+
+  mostrarMensagem("Lista limpa com sucesso", "sucesso");
+}
+
+// ==============================
+// LISTAR ITENS
+// ==============================
+
 function listar() {
   listElement.innerHTML = "";
 
-  listaItens.forEach((i) => {
-    let liElement = criarItem(i);
+  listaItens.forEach((item) => {
+    let liElement = criarItem(item);
 
     listElement.appendChild(liElement);
   });
@@ -52,13 +83,9 @@ function listar() {
   atualizarProgresso();
 }
 
-buttonElement.onclick = adicionar;
-
-inputElement.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    adicionar();
-  }
-});
+// ==============================
+// CRIAR ITEM
+// ==============================
 
 function criarItem(item) {
   let liElement = document.createElement("li");
@@ -91,33 +118,14 @@ function criarItem(item) {
   editar.textContent = "✏️";
 
   editar.addEventListener("click", () => {
-    let novoNome = prompt("Editar item:", item.nome);
-
-    if (novoNome === null) {
-      return;
-    }
-
-    novoNome = novoNome.trim();
-
-    if (novoNome === "") {
-      alert("Digite algum item");
-      return;
-    }
-
-    item.nome = novoNome;
-
-    listar();
-    salvarDados();
+    editarItem(item);
   });
 
   let excluir = document.createElement("button");
   excluir.textContent = "🗑️";
 
   excluir.addEventListener("click", () => {
-    listaItens = listaItens.filter((i) => i.id !== item.id);
-
-    listar();
-    salvarDados();
+    excluirItem(item);
   });
 
   divAcoes.appendChild(editar);
@@ -130,53 +138,96 @@ function criarItem(item) {
   return liElement;
 }
 
+// ==============================
+// EDITAR ITEM
+// ==============================
+
+function editarItem(item) {
+  let novoNome = prompt("Editar item:", item.nome);
+
+  if (novoNome === null) {
+    return;
+  }
+
+  novoNome = novoNome.trim();
+
+  if (novoNome === "") {
+    mostrarMensagem("Digite algum item", "erro");
+    return;
+  }
+
+  let itemExiste = listaItens.some(
+    (i) => i.id !== item.id && i.nome.toLowerCase() === novoNome.toLowerCase(),
+  );
+
+  if (itemExiste) {
+    mostrarMensagem("Já existe um item com esse nome", "aviso");
+    return;
+  }
+
+  item.nome = novoNome;
+
+  listar();
+  salvarDados();
+}
+
+// ==============================
+// EXCLUIR ITEM
+// ==============================
+
+function excluirItem(item) {
+  listaItens = listaItens.filter((i) => i.id !== item.id);
+
+  listar();
+  salvarDados();
+}
+
+// ==============================
+// ATUALIZAR PROGRESSO
+// ==============================
+
 function atualizarProgresso() {
   let itensAusentes = listaItens.filter((i) => i.comprado === false);
 
   let progresso = 0;
 
-  if (listaItens.length === 0) {
-    progressoBarra.style.width = "0%";
-    progressoTexto.textContent = "0%";
-  } else {
+  if (listaItens.length > 0) {
     progresso = 1 - itensAusentes.length / listaItens.length;
 
     progresso = Number((progresso * 100).toFixed(0));
-
-    progressoBarra.style.width = progresso + "%";
-    progressoTexto.textContent = progresso + "%";
   }
 
-  if (progresso === 100) {
-    progressoBarra.classList.add("completo");
-  } else {
-    progressoBarra.classList.remove("completo");
-  }
+  progressoBarra.style.width = progresso + "%";
+
+  progressoTexto.textContent = progresso + "%";
+
+  progressoBarra.classList.toggle("completo", progresso === 100);
 }
+
+// ==============================
+// LOCAL STORAGE
+// ==============================
 
 function salvarDados() {
   localStorage.setItem("@listaDeCompras", JSON.stringify(listaItens));
 }
 
+// ==============================
+// MENSAGENS
+// ==============================
+
 function mostrarMensagem(mensagem, tipo = "erro") {
   let mensagemElement = document.createElement("div");
 
-  let icone = "";
-
-  if (tipo === "erro") {
-    icone = "❌";
-  }
-
-  if (tipo === "sucesso") {
-    icone = "✅";
-  }
-
-  if (tipo === "aviso") {
-    icone = "⚠️";
-  }
+  let icones = {
+    erro: "❌",
+    sucesso: "✅",
+    aviso: "⚠️",
+  };
 
   mensagemElement.className = `mensagem ${tipo}`;
-  mensagemElement.textContent = `${icone} ${mensagem}`;
+
+  mensagemElement.textContent = `${icones[tipo]} ${mensagem}`;
 
   mensagensElement.appendChild(mensagemElement);
 
@@ -184,3 +235,17 @@ function mostrarMensagem(mensagem, tipo = "erro") {
     mensagemElement.remove();
   }, 3000);
 }
+
+// ==============================
+// EVENTOS
+// ==============================
+
+adicionarElement.addEventListener("click", adicionar);
+
+limparElement.addEventListener("click", limparLista);
+
+inputElement.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    adicionar();
+  }
+});
