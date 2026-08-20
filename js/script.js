@@ -4,30 +4,35 @@ let buttonElement = document.querySelector("#app button");
 let progressoBarra = document.querySelector("#progresso-barra");
 let progressoTexto = document.querySelector("#progresso-texto");
 
-let listaItens = [];
+let listaItens = JSON.parse(localStorage.getItem("@listaDeCompras")) || [];
+
+listar();
 
 function adicionar() {
-  if (inputElement.value === "") {
-    alert("Digite algum item");
-    return false;
-  } else {
-    let item = inputElement.value;
+  let item = inputElement.value.trim();
 
-    listaItens.push({
-      id: Date.now(),
-      nome: item,
-      comprado: false,
-    });
-    inputElement.value = "";
-    inputElement.focus();
-    listar();
+  if (item === "") {
+    alert("Digite algum item");
+    return;
   }
+
+  listaItens.push({
+    id: Date.now(),
+    nome: item,
+    comprado: false,
+  });
+
+  inputElement.value = "";
+  inputElement.focus();
+
+  listar();
+  salvarDados();
 }
 
 function listar() {
   listElement.innerHTML = "";
 
-  listaItens.map((i) => {
+  listaItens.forEach((i) => {
     let liElement = criarItem(i);
 
     listElement.appendChild(liElement);
@@ -37,6 +42,7 @@ function listar() {
 }
 
 buttonElement.onclick = adicionar;
+
 inputElement.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     adicionar();
@@ -50,35 +56,57 @@ function criarItem(item) {
   checkBox.type = "checkbox";
   checkBox.checked = item.comprado;
 
-  checkBox.addEventListener("change", () => {
-    item.comprado = checkBox.checked;
-
-    itemText.classList.toggle("texto-riscado");
-
-    atualizarProgresso();
-  });
-
   let itemText = document.createElement("span");
   itemText.textContent = item.nome;
   itemText.className = "texto-item";
+
+  if (item.comprado) {
+    itemText.classList.add("texto-riscado");
+  }
+
+  checkBox.addEventListener("change", () => {
+    item.comprado = checkBox.checked;
+
+    itemText.classList.toggle("texto-riscado", item.comprado);
+
+    atualizarProgresso();
+    salvarDados();
+  });
 
   let divAcoes = document.createElement("div");
   divAcoes.className = "acoes";
 
   let editar = document.createElement("button");
   editar.textContent = "✏️";
+
   editar.addEventListener("click", () => {
     let novoNome = prompt("Editar item:", item.nome);
 
+    if (novoNome === null) {
+      return;
+    }
+
+    novoNome = novoNome.trim();
+
+    if (novoNome === "") {
+      alert("Digite algum item");
+      return;
+    }
+
     item.nome = novoNome;
+
     listar();
+    salvarDados();
   });
 
   let excluir = document.createElement("button");
   excluir.textContent = "🗑️";
+
   excluir.addEventListener("click", () => {
     listaItens = listaItens.filter((i) => i.id !== item.id);
+
     listar();
+    salvarDados();
   });
 
   divAcoes.appendChild(editar);
@@ -110,5 +138,11 @@ function atualizarProgresso() {
 
   if (progresso === 100) {
     progressoBarra.classList.add("completo");
+  } else {
+    progressoBarra.classList.remove("completo");
   }
+}
+
+function salvarDados() {
+  localStorage.setItem("@listaDeCompras", JSON.stringify(listaItens));
 }
