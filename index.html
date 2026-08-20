@@ -3,31 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="css/style.css" />
+
     <title>Lista de Compras de Mercado</title>
   </head>
 
   <body>
+    <!-- MENSAGENS -->
+    <div id="mensagens"></div>
+
+    <!-- LOGO -->
     <div id="logo">
       <img
         src="img/logo_app_lista_de_compras.png"
         alt="logo lista de compras"
       />
     </div>
+
+    <!-- APLICAÇÃO -->
     <div id="app">
       <h1>Lista de Compras de Mercado</h1>
 
+      <!-- PROGRESSO -->
       <div id="progresso">
         <div id="progresso-barra"></div>
       </div>
 
       <p id="progresso-texto">0%</p>
 
+      <!-- ADICIONAR ITEM -->
       <input type="text" autofocus placeholder="Digite o item da lista" />
+
       <button>Adicionar</button>
 
+      <!-- LISTA -->
       <ul></ul>
     </div>
+
     <script src="js/script.js"></script>
   </body>
 </html>

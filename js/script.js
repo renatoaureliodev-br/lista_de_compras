@@ -3,6 +3,7 @@ let inputElement = document.querySelector("#app input");
 let buttonElement = document.querySelector("#app button");
 let progressoBarra = document.querySelector("#progresso-barra");
 let progressoTexto = document.querySelector("#progresso-texto");
+let mensagensElement = document.querySelector("#mensagens");
 
 let listaItens = JSON.parse(localStorage.getItem("@listaDeCompras")) || [];
 
@@ -10,9 +11,19 @@ listar();
 
 function adicionar() {
   let item = inputElement.value.trim();
+  let itemExiste = listaItens.some(
+    (i) => i.nome.toLowerCase() === item.toLowerCase(),
+  );
 
   if (item === "") {
-    alert("Digite algum item");
+    mostrarMensagem("Digite algum item", "erro");
+    inputElement.focus();
+    return;
+  }
+
+  if (itemExiste) {
+    mostrarMensagem("Item já existe", "aviso");
+    inputElement.focus();
     return;
   }
 
@@ -145,4 +156,31 @@ function atualizarProgresso() {
 
 function salvarDados() {
   localStorage.setItem("@listaDeCompras", JSON.stringify(listaItens));
+}
+
+function mostrarMensagem(mensagem, tipo = "erro") {
+  let mensagemElement = document.createElement("div");
+
+  let icone = "";
+
+  if (tipo === "erro") {
+    icone = "❌";
+  }
+
+  if (tipo === "sucesso") {
+    icone = "✅";
+  }
+
+  if (tipo === "aviso") {
+    icone = "⚠️";
+  }
+
+  mensagemElement.className = `mensagem ${tipo}`;
+  mensagemElement.textContent = `${icone} ${mensagem}`;
+
+  mensagensElement.appendChild(mensagemElement);
+
+  setTimeout(() => {
+    mensagemElement.remove();
+  }, 3000);
 }
