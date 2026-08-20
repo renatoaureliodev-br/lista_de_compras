@@ -19,6 +19,7 @@ function adicionar() {
       comprado: false,
     });
     inputElement.value = "";
+    inputElement.focus();
     listar();
   }
 }
