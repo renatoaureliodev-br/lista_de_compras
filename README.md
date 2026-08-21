@@ -38,11 +38,10 @@ O objetivo é evoluir a aplicação por meio de pequenas milestones, utilizando 
 - [x] Barra de progresso das compras
 - [x] Animação ao completar a lista
 - [x] Persistência dos dados utilizando Local Storage
-- [ ] Impedir adição de itens duplicados
-- [ ] Validar itens durante a edição
-- [ ] Melhorar tratamento de entradas inválidas
+- [x] Impedir adição de itens duplicados
+- [x] Validar itens durante a edição
+- [x] Melhorar tratamento de entradas inválidas
 - [ ] Reorganizar itens comprados para o final da lista
-- [ ] Criar uma nova lista após concluir as compras
 
 ## 💾 Persistência dos dados
 
@@ -108,11 +107,11 @@ O desenvolvimento está dividido em milestones para facilitar a evolução gradu
 
 **Objetivo:** impedir dados inválidos ou duplicados e tornar o comportamento da lista mais consistente.
 
-- [ ] Impedir adição de itens duplicados
-- [ ] Considerar diferenças entre maiúsculas e minúsculas
-- [ ] Validar edição de itens
-- [ ] Impedir itens vazios ou contendo apenas espaços
-- [ ] Testar as validações junto com a persistência
+- [x] Impedir adição de itens duplicados
+- [x] Considerar diferenças entre maiúsculas e minúsculas
+- [x] Validar edição de itens
+- [x] Impedir itens vazios ou contendo apenas espaços
+- [x] Testar as validações junto com a persistência
 
 **Status:** 🚧 Em desenvolvimento
 
