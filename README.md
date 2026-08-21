@@ -119,6 +119,7 @@ O desenvolvimento está dividido em milestones para facilitar a evolução gradu
 
 ### Próximas etapas
 
+- [ ] Compartilhar listas por URL
 - [ ] Reorganizar itens comprados para o final da lista
 - [ ] Criar uma nova lista após concluir as compras
 - [ ] Melhorar experiência de usuário
